@@ -1,17 +1,20 @@
 import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+// connect with dbatabas url
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
 async function createDummyData() {
-  const dummyData = Array.from({ length: 10 }, (_, index) => ({
-    title: `Comic ${index + 1}`,
-    isPaid: Math.random() < 0.5, // 50% 확률로 true 또는 false
-    price: Math.random() < 0.5 ? Math.floor(Math.random() * 1000) : null, // 50% 확률로 가격 또는 null
-  }));
-
-  for (const data of dummyData) {
-    await prisma.comic.create({ data });
-  }
+  await prisma.comic.create({
+    data: {
+      title: 'One Piece',
+      isPaid: false,
+    },
+  });
 }
 
 createDummyData()
