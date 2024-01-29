@@ -1,6 +1,8 @@
 version: '3.5'
 
 services:
+
+  # PostgreSQL 데이터베이스 서비스
   db:
     image: postgres
     restart: always
@@ -12,6 +14,7 @@ services:
     ports:
       - '5432:5432'
 
+  # 애플리케이션 서비스
   app:
     build:
       context: .
@@ -24,9 +27,10 @@ services:
     depends_on:
       - db
       - pgadmin
-    volumes:
-      - ./src:/app/src
+    # volumes:
+    #   - ./src:/app/src
 
+  # pgAdmin 서비스 (PostgreSQL 데이터베이스 관리 도구)
   pgadmin:
     image: dpage/pgadmin4
     restart: always
