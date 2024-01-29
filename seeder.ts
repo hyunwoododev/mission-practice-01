@@ -9,11 +9,15 @@ const prisma = new PrismaClient({
 });
 
 async function createDummyData() {
-  await prisma.comic.create({
-    data: {
-      title: 'One Piece',
-      isPaid: false,
-    },
+  const dummyData = Array.from({ length: 100 }, (_, index) => ({
+    title: `Comic ${index + 1}`,
+    isPaid: Math.random() < 0.5,
+    price: Math.random() < 0.5 ? Math.floor(Math.random() * 1000) : null,
+    onlyAdult: Math.random() < 0.5,
+  }));
+  await prisma.comic.deleteMany();
+  await prisma.comic.createMany({
+    data: dummyData,
   });
 }
 

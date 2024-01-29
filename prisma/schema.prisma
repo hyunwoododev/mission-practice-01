@@ -23,10 +23,11 @@ model User {
 }
 
 model Comic {
-  id          Int          @id @default(autoincrement())
-  title       String
+  id          Int         @id @default(autoincrement())
+  title       String      @unique
   isPaid      Boolean
   price       Int?
+  onlyAdult   Boolean @default(false)
   evaluations Evaluation[]
   viewHistories ViewHistory[]
   createdAt   DateTime     @default(now())
