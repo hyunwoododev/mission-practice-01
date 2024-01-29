@@ -15,20 +15,20 @@ services:
       - '5432:5432'
 
   # 애플리케이션 서비스
-  # app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: mission-practice-01
-  #   environment:
-  #     - PORT=${PORT}
-  #   ports:
-  #     - '3000:3000'
-  #   depends_on:
-  #     - db
-  #     - pgadmin
-  #   volumes:
-  #     - ./src:/app/src
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mission-practice-01
+    environment:
+      - PORT=${PORT}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+      - pgadmin
+    # volumes:
+    #   - ./src:/app/src
 
   # pgAdmin 서비스 (PostgreSQL 데이터베이스 관리 도구)
   pgadmin:
