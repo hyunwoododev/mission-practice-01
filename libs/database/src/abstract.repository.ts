@@ -13,10 +13,22 @@ export interface FilterQuery {
 @Injectable()
 export abstract class AbstractRepository {
   protected model: any;
+
+  /**
+   * Constructor for AbstractRepository.
+   * @param databaseService - Instance of DatabaseService providing PrismaClient.
+   * @param modelName - Name of the Prisma model associated with the repository.
+   */
   constructor(databaseService: DatabaseService, modelName: string) {
     this.model = databaseService[modelName];
   }
 
+  /**
+   * Find multiple records based on optional filter criteria.
+   * @param filterQuery - Optional filter criteria.
+   * @returns A list of records matching the filter criteria.
+   * @throws InternalServerErrorException if an error occurs during the operation.
+   */
   async find(filterQuery?: FilterQuery) {
     try {
       const result = await this.model.findMany(
@@ -25,10 +37,16 @@ export abstract class AbstractRepository {
       return result;
     } catch (error) {
       console.log(error.message);
-      throw new InternalServerErrorException('Error while finding document.');
+      throw new InternalServerErrorException('Error while finding documents.');
     }
   }
 
+  /**
+   * Create a new record.
+   * @param data - Data to be inserted for the new record.
+   * @returns The created record.
+   * @throws InternalServerErrorException if an error occurs during the operation.
+   */
   async create<T>(data: T) {
     try {
       const result = await this.model.create({
@@ -37,58 +55,35 @@ export abstract class AbstractRepository {
       return result;
     } catch (error) {
       console.log(error.message);
-      throw new InternalServerErrorException('Error while creating document.');
+      throw new InternalServerErrorException(
+        'Error while creating a document.',
+      );
     }
   }
 
-  // async findOne(filterQuery: FilterQuery): Promise<any> {
-  //   try {
-  //     // 모델 이름을 동적으로 사용
-  //     const document = await this.model.findFirst({
-  //       where: filterQuery.where,
-  //     });
+  /**
+   * Find a single record based on filter criteria.
+   * @param filterQuery - Filter criteria to find the record.
+   * @returns The found record.
+   * @throws NotFoundException if the record is not found.
+   * @throws InternalServerErrorException if an error occurs during the operation.
+   */
+  async findOne(filterQuery: FilterQuery): Promise<any> {
+    try {
+      const result = await this.model.findFirst({
+        where: filterQuery.where,
+      });
 
-  //     // 조회된 데이터가 없을 경우 예외 처리
-  //     if (!document) {
-  //       throw new NotFoundException(
-  //         `Document not found with filterQuery: ${JSON.stringify(filterQuery.where)}`,
-  //       );
-  //     }
+      if (!result) {
+        throw new NotFoundException(
+          `Record not found with filterQuery: ${JSON.stringify(filterQuery.where)}`,
+        );
+      }
 
-  //     return document;
-  //   } catch (error) {
-  //     // database에서 발생한 에러 처리
-  //     throw new InternalServerErrorException(
-  //       error.message || 'Error while finding document.',
-  //     );
-  //   }
-  // }
-
-  //   async findOneAndUpdate(
-  //     filterQuery: FilterQuery<TDocument>,
-  //     update: UpdateQuery<TDocument>,
-  //   ) {
-  //     const document = await this.model.findOneAndUpdate(filterQuery, update, {
-  //       lean: true,
-  //       new: true,
-  //     });
-
-  //     if (!document) {
-  //       this.logger.warn(`Document not found with filterQuery:`, filterQuery);
-  //       throw new NotFoundException('Document not found.');
-  //     }
-
-  //     return document;
-  //   }
-
-  //   async upsert(
-  //     filterQuery: FilterQuery<TDocument>,
-  //     document: Partial<TDocument>,
-  //   ) {
-  //     return this.model.findOneAndUpdate(filterQuery, document, {
-  //       lean: true,
-  //       upsert: true,
-  //       new: true,
-  //     });
-  //   }
+      return result;
+    } catch (error) {
+      console.log(error.message);
+      throw new InternalServerErrorException('Error while finding a document.');
+    }
+  }
 }
