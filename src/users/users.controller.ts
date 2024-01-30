@@ -26,6 +26,11 @@ export class UsersController {
   }
 
   @Post()
+  @ApiOperation({
+    summary: 'Create a new user',
+    description: 'Creates a new user.',
+  })
+  @ApiResponse({ status: 201, description: 'User successfully created.' })
   create(@Body() data: CreateUserDto) {
     return this.userRepository.create<CreateUserDto>(data);
   }
