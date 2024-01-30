@@ -22,11 +22,11 @@ export class UsersController {
     description: 'List of users successfully retrieved.',
   })
   findAll() {
-    return this.userRepository.findAllUsers();
+    return this.userRepository.find();
   }
 
   @Post()
   create(@Body() data: CreateUserDto) {
-    return this.userRepository.createUser(data);
+    return this.userRepository.create<CreateUserDto>(data);
   }
 }
